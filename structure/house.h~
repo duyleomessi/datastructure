@@ -1,0 +1,12 @@
+typedef struct Room {
+  int width;
+  int height;
+  char name[30];
+};
+
+typedef struct House {
+  char *address;
+  struct Room *rooms[10];
+}
+
+ 

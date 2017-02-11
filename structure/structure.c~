@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "house.h"
+
+int main(int argc, char* argv[]) {
+
+  struct Room room1;
+  room1.width = 20;
+  room1.height = 30;
+  room1.name = "Room 1";
+
+  printf("room1 has name %s\n", room1.name);
+  
+  return 0;
+}
