@@ -1,0 +1,1 @@
+Node is a JavaScript runtime built on Chromes V8 JavaScript engine. Node uses an event driven, non blocking model that makes it lightweight and efficient. Node package ecosystem, npm, is the largest ecosystem of open source libraries in the world.
