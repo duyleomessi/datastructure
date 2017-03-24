@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "duy.h"
+
+#define MAX_LEN 81
+
+char getMenu();
+void copyByWord(FILE *fin, FILE *fout);
+void copyByLine(FILE *fin, FILE *fout);
+void copyByBlock(FILE *fin, FILE *fout);
+void copyByBlock(FILE *fin, FILE *fout);
+
+int main(int argc, char *argv[]) {
+  FILE *fptr1, *fptr2;
+  char filename1[] = "source.txt";
+  char filename2[] = "destination.txt";
+  
+  if ((fptr1 = fopen(filename1, "r")) == NULL) {
+    printf("Cannot open %s\n", filename1);
+    return 1;
+  }
+
+  if ((fptr2 = fopen(filename2, "w")) == NULL) {
+    printf("Cannot open %s\n", filename2);
+    return 1;
+  }
+
+  char choice;
+  
+  do {
+    choice = getMenu();
+    switch (choice) {
+    case '1':
+      copyByWord(fptr1, fptr2);
+      rewind(fptr1);
+      break;
+    
+    case '2':
+      copyByLine(fptr1, fptr2);
+       rewind(fptr1);
+      break;
+
+    case '3':   
+      copyByBlock(fptr1, fptr2);
+      rewind(fptr1);
+      break;
+
+    case '0':
+      return 1;
+
+    default:
+      printf("The input is invalid. Choose again: \n");
+    }
+  }  while(choice != '0');
+  return 0;
+}
+
+char getMenu() {
+  char choice;
+  printf("****************\n");
+  printf("1. Copy by word\n");
+  printf("2. Copy by line\n");
+  printf("3. Copy by block\n");
+  printf("0. Quit\n");
+  printf("****************\n");
+  
+  printf("Enter your choice: ");
+  scanf("%c", &choice);
+  myfflush();
+  return choice;
+}
+
+void copyByWord(FILE *fin, FILE *fout) {
+  char c;
+  clock_t start = clock();
+  while ((c = fgetc(fin)) != EOF) {
+    //printf("%c", c);
+    fputc(c, fout);
+  }
+  clock_t end = clock();
+  float seconds = (float) (end - start) / CLOCKS_PER_SEC;
+  printf("time copy by world is: %f seconds\n", seconds);
+}
+
+void copyByLine(FILE *fin, FILE *fout) {
+  char buff[MAX_LEN];
+  clock_t start = clock();
+  while (fgets(buff, MAX_LEN, fin) != NULL) {
+    // printf("%s", buff);
+    fputs(buff, fout);
+  }
+  clock_t end = clock();
+  float seconds = (float) (end - start) / CLOCKS_PER_SEC;
+  printf("time copy by line is: %f seconds\n", seconds);
+}
+
+void copyByBlock(FILE *fin, FILE *fout) {
+  int n;
+  printf("Enter the block you wanna copy: ");
+  scanf("%d", &n);
+  myfflush();
+  
+  char buff[n];
+  clock_t start = clock();
+  while (!feof(fin)) {
+    int num = fread(buff, sizeof(char), n, fin);
+    buff[num * sizeof(char)] = '\0';
+    // printf("%s\n", buff);
+    fwrite(buff, sizeof(char), n, fout);
+  }
+   clock_t end = clock();
+   float seconds = (float) (end - start) / CLOCKS_PER_SEC;
+   printf("time copy by block is: %f seconds\n", seconds);
+}

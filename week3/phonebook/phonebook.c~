@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_ELEMENT 1
+
+typedef struct {
+  char name[20];
+  char tel[11];
+  char email[25];
+} PhoneAddress;
+
+void fllushed();
+
+int main(int argc, char *argv[]) {
+  int i;
+  PhoneAddress *phoneAddress = (PhoneAddress*)malloc(MAX_ELEMENT * sizeof(PhoneAddress));
+  for (i = 0; i < MAX_ELEMENT; i++) {
+    printf("Contact %d\n", i + 1);
+    printf("Enter the name: ");
+    scanf("%[^\n]", phoneAddress[i].name);
+    fllushed();
+    printf("Enter the telephone: ");
+    scanf("%[^\n]", phoneAddress[i].tel);
+    fllushed();
+    printf("Enter the email: ");
+    scanf("%[^\n]", phoneAddress[i].email);
+    fllushed();
+    //    phoneAddress++;
+
+    printf("%-10s%-20s%-20s\n", phoneAddress[i].name, phoneAddress[i].tel, phoneAddress[i].email);
+  }
+
+  //  printf("result\n");
+  /* for (i = 0; i < MAX_ELEMENT; i++) { */
+  /*   printf("%-10s%-20s%-20s\n", phoneAddress[i].name, phoneAddress[i].tel, phoneAddress[i].email); */
+  /* } */
+  
+  return 0;
+}
+
+void fllushed() {
+  while(getc(stdin) == '\n') break;
+}
