@@ -1,0 +1,44 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX_LEN 81
+
+void compare(FILE *fin1, FILE *fin2) ;
+
+int main(int argc, char* argv[]) {
+
+  if (argc != 3) {
+    printf("The number of params is not correct!!");
+    return 0;
+  }
+
+  FILE *fptr1, *fptr2;
+  char filename1[] = argv[1];
+  char filename2[] = argv[2];
+
+  
+  if ( (fptr1 = fopen(filename1, "r")) == NULL) {
+    printf("Cannot open %s\n", filename1);
+    return 0;
+  }
+
+  if ((fptr2 = fopen(filename2, "r")) == NULL) {
+    printf("Cannot open %s\n", filename2);
+    return 0;
+  }
+
+  compare(fptr1, fptr2);
+  fclose(fptr1);
+  fclose(fptr2);
+  
+  return 0;
+}
+
+void compare(FILE *fin1, FILE *fin2)  {
+  char buff1[MAX_LEN];
+  char buff2[MAX_LEN];
+
+  if(fgets(buff1, MAX_LEN, fin1) != NULL) {
+    printf("%s", buff1);
+  }
+}
