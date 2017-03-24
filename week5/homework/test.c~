@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "linklist.h"
+
+int main (int argc, char *argv[]) {
+  node *arr = NULL;
+  node *arr1 = NULL;
+  //  arr = (node *)malloc(sizeof(node));
+  elementtype e;
+  e.val = 2;
+  insertAtTheBegin(arr, e);
+  e.val = 3;
+  insertAtTheBegin(arr, e);
+  printList(&arr);
+}
