@@ -31,6 +31,7 @@ void deleteList(node **root);
 void deleteAtPosition(node **root, int position);
 void insertAtPosition(node **root, elementtype e, int position);
 void deleteAtTheMiddle(node **root);
+node* list_reverse(node** root);
 
 void printList(node **root) {
   node *p = *root;
@@ -216,8 +217,26 @@ void deleteAtTheMiddle(node **root) {
   node *pre = findPreviousNode(root, cur);
   if(cur == NULL) {
     exit(1);
-  } 
-  pre->next = cur->next;
-  free(cur);
-  cur = pre->next;
+  }
+  if (cur == *root) {
+    removeFirstItem(root);
+  } else {
+    pre->next = cur->next;
+    free(cur);
+    cur = pre->next;
+  }
+}
+
+node* list_reverse(node** root) {
+  node *prev;
+  cur = prev = NULL;
+
+  while(*root != NULL) {
+    cur = *root;
+    *root = (*root)->next;
+    cur->next = prev;
+    prev = cur;
+  }
+
+  return prev;
 }
