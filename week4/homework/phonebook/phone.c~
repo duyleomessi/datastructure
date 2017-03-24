@@ -1,0 +1,214 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "duy.h"
+
+#define MAX_LEN 80
+#define MAX_LINE 10
+
+typedef struct {
+  char model[50];
+  int memory;
+  float screen;
+  int price;
+} Phone;
+
+char getMenu();
+void importToDat(FILE *fin, FILE *fout, int size);
+Phone* readTotal(FILE *fin, int size);
+void readPart(FILE *fin, int start, int end);
+void printAllData(FILE *fout, int size);
+Phone searchPhone(Phone *phone, int size);
+
+int main() {
+  FILE *fp1, *fp2;
+  char filename1[] = "phonedb.txt";
+  char filename2[] = "phonedb.dat";
+  
+  fp1 = myfopen(filename1, "r");
+  fp2 = myfopen(filename2, "w+b");
+
+  int lengOfFile = countLine(fp1);
+  rewind(fp1);
+  //printf("Leng of file: %d\n", lengOfFile);
+
+  Phone *phone;
+  Phone searchedPhone;
+  char choice;
+  char readingMethod;
+  int start, end;
+  do {
+    choice = getMenu();
+    switch (choice) {
+    case '1':
+      importToDat(fp1, fp2, lengOfFile);
+      break;
+    case '2':
+      do {
+	printf("1. Read total\n");
+	printf("2. Read part\n");
+	printf("Press any other key to exit\n");
+	printf("Which way do you wanna read: ");
+	scanf("%c", &readingMethod);
+	myfflush();
+	
+	switch (readingMethod) {
+	case '1':
+	  phone = readTotal(fp2, lengOfFile);
+	  if(phone == NULL) {
+	    printf("Memory allocated fail!!!");
+	    return 1;
+	  }
+	  break;
+	case '2':
+	  printf("Where do you wanna start reading: ");
+	  scanf("%d", &start);
+	  printf("Where do you wanna end reading: ");
+	  scanf("%d", &end);
+	  myfflush();
+	  readPart(fp2, start, end);
+	  break;
+	}
+      } while(readingMethod == '1' && readingMethod == '2');
+      break;
+    case '3':
+      printAllData(fp2, lengOfFile);
+      break;
+    case '4':
+      searchedPhone = searchPhone(phone, lengOfFile);
+      break;
+    case '0':
+      return 1;
+    default:
+      printf("The choice is invalid!!!! Select again\n");
+    }
+  }while(choice != '0');
+  
+  fclose(fp1);
+  fclose(fp2);
+  return 0;
+}
+
+char getMenu() {
+  char choice;
+  printf("************************\n");
+  printf("1. Import db form text\n");
+  printf("2. Import from Db\n");
+  printf("3. Print All Nokia Db\n");
+  printf("4. Search by model\n");
+  printf("0. Quit\n");
+  printf("************************\n");
+  
+  printf("Enter your choice: ");
+  scanf("%c", &choice);
+  myfflush();
+  
+  return choice;
+}
+
+void importToDat(FILE *fin, FILE *fout, int size)  {
+  int i;
+
+  Phone *phone = (Phone *)malloc(size * sizeof(Phone));
+  if (phone == NULL) {
+    printf("Memory allocated failed!!!!");
+    exit(1);
+  }
+
+  for (i = 0; i < size; i++) {
+    fscanf(fin, "%[^|]|%d|%f|%d", phone[i].model, &phone[i].memory, &phone[i].screen, &phone[i].price);
+    //printf("%-50s%-10d%-10.2f%3d\n", phone[i].model, phone[i].memory, phone[i].screen, phone[i].price);
+  }
+
+  int n = fwrite(phone, sizeof(Phone), size, fout);
+  if (n == size) {
+    printf("*************\n");
+    printf("Write success!!!!\n");
+    printf("*************\n");
+  } else {
+    printf("Something went wrong!!\n");
+  }
+  
+  free(phone);
+}
+
+Phone* readTotal(FILE *fin, int size) {
+  Phone *phone = (Phone *) malloc(size * sizeof(Phone));
+  int i;
+  fread(phone, sizeof(Phone), size, fin);
+  for (i = 0; i < size; i++) {
+    printf("%-40s%-10d%-10.2f%3d\n", phone[i].model, phone[i].memory, phone[i].screen, phone[i].price);
+  }
+  return phone;
+}
+
+void readPart(FILE *fin, int start, int end) {
+  printf("Read from %d to %d\n", start, end);
+  if (fseek(fin, (start - 1) * sizeof(Phone), SEEK_SET) != 0) {
+    printf("Fseek fail\n");
+    exit(1);
+  }
+
+  Phone *phone = (Phone *) malloc((end - start + 1) * sizeof(Phone));
+  if (phone == NULL) {
+    printf("Memory allocated fail\n");
+    exit(1);
+  }
+  fread(phone, sizeof(Phone), (end-start+1), fin);
+
+  int i;
+  for (i = 0; i < end - start + 1; i++) {
+    printf("%-40s%-10d%-10.2f%3d\n", phone[i].model, phone[i].memory, phone[i].screen, phone[i].price);
+  }
+  free(phone);
+};
+
+
+void printAllData(FILE *fout, int size) {
+  int count = 0;
+  if (size <= MAX_LINE) {
+    readPart(fout, 0, size);
+  } else {
+    rewind(fout);
+    if(!feof(fout)) {
+      do {
+	if((count + 1) * MAX_LINE >= size) {
+	  readPart(fout, count * MAX_LINE + 1 , size);
+	  break;
+	}
+	readPart(fout, count * MAX_LINE + 1 , (count + 1) * MAX_LINE);
+	count++;
+	printf("Press  enter to continue or any other key to quit: ");
+	if (fgetc(stdin) != '\n') {
+	  break;
+	}
+      } while(fgetc(stdin) == '\n');
+    }
+  }
+  myfflush();
+};
+
+Phone searchPhone(Phone *phone, int size) {
+  char search[50];
+  int i;
+  int find = 0;
+  printf("Enter the name of phone you wanna search: ");
+  scanf("%[^\n]", search);
+  myfflush();
+  printf("Searching for %s\n", search);
+  for (i = 0; i < size; i++) {
+    if (strcmp(search, phone[i].model) == 0) {
+      find = 1;
+      printf("%-40s%-10d%-10.2f%3d\n", phone[i].model, phone[i].memory, phone[i].screen, phone[i].price);
+      break;
+    } else {
+      printf("%s is difference from %s and result is %d\n\n", search, phone[i].model, strcmp(search, phone[i].model));
+    }
+  }
+  if (find == 1)
+    return phone[i];
+  else {
+    printf("Not found\n");
+    //    return NULL;
+  }
+}
