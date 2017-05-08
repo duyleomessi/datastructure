@@ -53,7 +53,7 @@ node* makeNewNode(elementtype e) {
 
 void insertAtTheBegin(node **root, elementtype e) {
   node *newNode = makeNewNode(e);
-  if(root == NULL) {
+  if(*root == NULL) {
     *root = newNode;
     cur = newNode;
   } else {

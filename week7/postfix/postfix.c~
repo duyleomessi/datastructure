@@ -1,0 +1,9 @@
+#include <sdtio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "stack.h"
+
+
+ int main(int argc, char* argv[]) {
+   
+ }

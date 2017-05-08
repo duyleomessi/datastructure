@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -87,23 +88,31 @@ char getMenu() {
 
 
 void readDataFromText(node **phone, FILE *fin, FILE *fout,  int totalMember) {
+  /* elementtype *e = (elementtype*) malloc(totalMember * sizeof(elementtype)); */
   elementtype e[totalMember];
   
   int i = 0;
   for(i = 0; i < totalMember; i++) {
     fscanf(fin, "%[^|]|%d|%f|%d", e[i].name, &e[i].memory, &e[i].screen, &e[i].price);
- 
+    printf(" %s %d %f %d\n", e[i].name, e[i].memory, e[i].screen, e[i].price);
     insertAfterCurrent(phone, e[i]);
   };
 
-  fwrite(e, sizeof(e), totalMember, fout);
+  for(i = 0; i < totalMember; i++) {
+    printf(" %s %d %f %d\n", e[i].name, e[i].memory, e[i].screen, e[i].price);
+  };
+
+  printf("totalMember: %d\n", totalMember);
+  fwrite(e, sizeof(elementtype), totalMember, fout);
 };
 
 
 void readDataFromDat(node **phone, FILE *fin, int totalMember) {
+
+  printf("totalMember is %d\n", totalMember);
+  /* elementtype *e = (elementtype*) malloc(totalMember * sizeof(elementtype)); */
   elementtype e[totalMember];
-  
-  fread(e, sizeof(e), totalMember, fin);
+  fread(e, sizeof(elementtype), totalMember, fin);
   int i;
   for(i = 0; i < totalMember; i++) {
     //printf("value %s %d %f %d\n", e[i].name, e[i].memory, e[i].screen, e[i].price);

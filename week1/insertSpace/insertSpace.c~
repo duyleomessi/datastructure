@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void insertSpace(FILE* fin);
+
+int main(int argc, char* argv[]) {
+  FILE *fptr;
+  char filename[] = "class1EF.txt";
+
+  if ((fptr = fopen(filename, "r+")) == NULL) {
+    printf("cannot open file %s\n", filename);
+    return 0;
+  }
+  insertSpace(fptr);
+  fclose(fptr);
+  return 0;
+}
+
+void insertSpace(FILE* fin) {
+  char c;
+
+  while((c = fgetc(fin)) != EOF) {
+    printf("%c", c);
+    if (c == '\n') {
+      printf("end of line");
+      fputc('\n', fin);
+      fputc('\n', fin);
+    }
+  };
+}

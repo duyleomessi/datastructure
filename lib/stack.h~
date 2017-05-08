@@ -1,0 +1,38 @@
+#define MAX 100
+
+typedef struct {
+  int val;
+} elementtype;
+
+typedef struct node node;
+
+struct node {
+  elementtype element;
+  node *next;
+};
+
+node *makeNewNode(elementtype e) {
+  node *newNode = (node *)malloc(sizeof(node));
+  p->element = e;
+  p->next = NULL;
+  return newNode;
+}
+
+void initialize(node **top) {
+  *top = NULL;
+}
+
+int isEmpty(node **top) {
+  return *top == NULL;
+}
+
+void push(node **top, elementtype e) {
+  node *p = makeNewNode(e);
+  if (isEmpty) {
+    (*top) = p;
+  } else {
+    p->next = (*top);
+    (*top) = p;
+  }
+  
+}
