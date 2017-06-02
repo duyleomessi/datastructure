@@ -257,7 +257,6 @@ void start(queue **head1, queue **tail1, queue **head2, queue **tail2, queue **h
         elementType vsLive = deQueue(head2, tail2);
         enQueue(head3, tail3, vsLive);
     }
-
 }
 
 void handleDead(queue **headDead, queue **tailDead, elementType vsDead, queue **headLive, queue **tailLive, elementType vsLive, queue **head3, queue **tail3)
@@ -279,6 +278,22 @@ void checkWinner(queue **h1, queue **h2)
     }
 }
 
-void rank(queue **h, queue **t) {
-   
+void rank(queue **h, queue **t)
+{
+    elementType tmp;
+    for (queue *p = *h; p != NULL; p = p->next)
+        for (queue *ptr = p->next; ptr != NULL; ptr = ptr->next)
+            if (p->e.diem < ptr->e.diem)
+            {
+                tmp = p->e;
+                p->e = ptr->e;
+                ptr->e = tmp;
+            }
+
+    printf("\n\tBANG XEP HANG:\n\n");
+    int i = 1;
+    printf("%-5s%-20s%-15s\n\n", "STT", "BIET HIEU", "DIEM");
+    for (queue *p = *h; p != NULL; p = p->next)
+        printf("%-5d%-20s%-15d\n", i++, p->e.name, p->e.diem);
+    printf("\n");
 }
